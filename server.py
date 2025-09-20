@@ -13,13 +13,18 @@ def getUser(user: str = None):
     if f"{user}.sh" not in userFiles:
         open(f"./users/{user}.sh", "w").close()
 
-        with open("./users/users.json", "r") as f:
-            data = json.load(f)
+    # Check if user has alreay been run
+    with open("./users/users.json", "r") as f:
+        data = json.load(f)
 
-        data[user] = True
+    if data[user]:
+        print(f"{user} has already run their script")
+        return f"{user} has already run their script"
 
-        with open("./users/users.json", "w") as f:
-            json.dump(data, f, indent=4)
+    data[user] = True
+
+    with open("./users/users.json", "w") as f:
+        json.dump(data, f, indent=4)
 
     return send_file(f"./users/{user}.sh", as_attachment=True)
 
