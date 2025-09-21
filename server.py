@@ -1,33 +1,35 @@
-from flask import Flask, abort, send_file
-import os, json
+import subprocess, time, requests, threading, logging, utils
+from flaskServer import getApp, USERS
 
-app = Flask(__name__)
+def run_ngrok():
+    ngrok = subprocess.Popen(
+        ["ngrok", "http", "8000"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
 
-# ?user=011935
-@app.route("/<user>")
-def getUser(user: str = None):
-    if user is None:
-        abort(400, "Bad request: missing user parameter")
-    userFiles = os.listdir("./users")
+    time.sleep(5)
 
-    if f"{user}.sh" not in userFiles:
-        open(f"./users/{user}.sh", "w").close()
+    url = "http://localhost:4040/api/tunnels"
+    publicURL = requests.get(url).json()["tunnels"][0]["public_url"]
+    print(publicURL)
 
-    # Check if user has alreay been run
-    with open("./users/users.json", "r") as f:
-        data = json.load(f)
+    # update firebase
+    r = requests.put("https://retard-e363c-default-rtdb.asia-southeast1.firebasedatabase.app/.json", json={"IP": publicURL})
+    r.raise_for_status()
+    return ngrok
+def run_flask():
+    getApp().run(host="0.0.0.0", port=8000, debug=False)
 
-    if data[user]:
-        print(f"{user} has already run their script")
-        return f"{user} has already run their script"
+flaskThread = threading.Thread(target=run_flask, daemon=True)
+flaskThread.start()
 
-    data[user] = True
+flaskLog = logging.getLogger('werkzeug')
+flaskLog.setLevel(logging.ERROR)
 
-    with open("./users/users.json", "w") as f:
-        json.dump(data, f, indent=4)
+ngrok = run_ngrok()
 
-    return send_file(f"./users/{user}.sh", as_attachment=True)
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=False)
+while True:
+    user = input("")
+    if user in USERS.keys():
+        utils.modifyUser(user)
