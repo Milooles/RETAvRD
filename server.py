@@ -8,8 +8,6 @@ def run_ngrok():
         stderr=subprocess.DEVNULL
     )
 
-    time.sleep(5)
-
     url = "http://localhost:4040/api/tunnels"
     publicURL = requests.get(url).json()["tunnels"][0]["public_url"]
     print(publicURL)

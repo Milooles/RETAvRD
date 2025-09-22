@@ -9,3 +9,6 @@ def modifyUser(user):
 
     with open("./users/users.json", "w") as f:
         json.dump(data, f, indent=4)
+
+def urlStr(text: str):
+    return text.replace(" ", "%20")
