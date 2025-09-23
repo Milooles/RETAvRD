@@ -54,9 +54,8 @@ def getUserPython(user: str):
     print(color(f"{USERS[user]} ({user})", "blue"))
     return send_file(f"{PYTHON}/{user}.py", as_attachment=True)
 
-@app.route("/log", methods=["POST"])
-def printMessage():
-    print("received log request")
+@app.route("/log/<user>", methods=["POST"])
+def printMessage(user: str):
     message = request.form.get("msg")
-    print("Message from client:", message)
+    print(f"{user}: ", message)
     return f"Received: {message}"
