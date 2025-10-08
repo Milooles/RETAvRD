@@ -1,6 +1,7 @@
 from flask import Flask, abort, send_file, request
 from termcolor import colored as color
-import os, json, utils
+from time import time, strftime
+import os, json
 
 USERS = {
     "011935": "Miles"
@@ -10,6 +11,7 @@ USERS_FOLDER = "./users"
 USERS_JSON = f"{USERS_FOLDER}/users.json"
 BASH = f"{USERS_FOLDER}/bash"
 PYTHON = f"{USERS_FOLDER}/python"
+LOGS = f"{USERS_FOLDER}/logs"
 
 app = Flask("Flask Server")
 
@@ -57,5 +59,7 @@ def getUserPython(user: str):
 @app.route("/log/<user>", methods=["POST"])
 def printMessage(user: str):
     message = request.form.get("msg")
-    print(f"{user}: ", message)
+    with open(f"{LOGS}/{user}.txt", "a+") as logFile:
+        logFile.write(f"{strftime("%Y/%m/%d %H:%M:%S")}\n{message}\n\n")
+    print(message)
     return f"Received: {message}"

